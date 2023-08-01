@@ -9,7 +9,7 @@ const validate = require("./javascript/validate");
 connection.connect((error) => {
   if (error) throw error;
   console.log(
-    chalk.yellow.bold(
+    chalk.purple.bold(
       `====================================================================================`
     )
   );
@@ -22,7 +22,7 @@ connection.connect((error) => {
   );
   console.log(``);
   console.log(
-    chalk.yellow.bold(
+    chalk.purple.bold(
       `====================================================================================`
     )
   );
@@ -129,7 +129,7 @@ const viewAllEmployees = () => {
   connection.promise().query(sql, (error, response) => {
     if (error) throw error;
     console.log(
-      chalk.yellow.bold(
+      chalk.purple.bold(
         `====================================================================================`
       )
     );
@@ -137,13 +137,13 @@ const viewAllEmployees = () => {
       `                              ` + chalk.green.bold(`Current Employees:`)
     );
     console.log(
-      chalk.yellow.bold(
+      chalk.purple.bold(
         `====================================================================================`
       )
     );
     console.table(response);
     console.log(
-      chalk.yellow.bold(
+      chalk.purple.bold(
         `====================================================================================`
       )
     );
@@ -153,7 +153,7 @@ const viewAllEmployees = () => {
 // View all Roles
 const viewAllRoles = () => {
   console.log(
-    chalk.yellow.bold(
+    chalk.purple.bold(
       `====================================================================================`
     )
   );
@@ -162,7 +162,7 @@ const viewAllRoles = () => {
       chalk.green.bold(`Current Employee Roles:`)
   );
   console.log(
-    chalk.yellow.bold(
+    chalk.purple.bold(
       `====================================================================================`
     )
   );
@@ -175,7 +175,7 @@ const viewAllRoles = () => {
       console.log(role.title);
     });
     console.log(
-      chalk.yellow.bold(
+      chalk.purple.bold(
         `====================================================================================`
       )
     );
@@ -188,7 +188,7 @@ const viewAllDepartments = () => {
   connection.promise().query(sql, (error, response) => {
     if (error) throw error;
     console.log(
-      chalk.yellow.bold(
+      chalk.purple.bold(
         `====================================================================================`
       )
     );
@@ -196,13 +196,13 @@ const viewAllDepartments = () => {
       `                              ` + chalk.green.bold(`All Departments:`)
     );
     console.log(
-      chalk.yellow.bold(
+      chalk.purple.bold(
         `====================================================================================`
       )
     );
     console.table(response);
     console.log(
-      chalk.yellow.bold(
+      chalk.purple.bold(
         `====================================================================================`
       )
     );
@@ -220,7 +220,7 @@ const viewEmployeesByDepartment = () => {
   connection.query(sql, (error, response) => {
     if (error) throw error;
     console.log(
-      chalk.yellow.bold(
+      chalk.purple.bold(
         `====================================================================================`
       )
     );
@@ -229,13 +229,13 @@ const viewEmployeesByDepartment = () => {
         chalk.green.bold(`Employees by Department:`)
     );
     console.log(
-      chalk.yellow.bold(
+      chalk.purple.bold(
         `====================================================================================`
       )
     );
     console.table(response);
     console.log(
-      chalk.yellow.bold(
+      chalk.purple.bold(
         `====================================================================================`
       )
     );
@@ -245,7 +245,7 @@ const viewEmployeesByDepartment = () => {
 //View all Departments by Budget
 const viewDepartmentBudget = () => {
   console.log(
-    chalk.yellow.bold(
+    chalk.purple.bold(
       `====================================================================================`
     )
   );
@@ -253,7 +253,7 @@ const viewDepartmentBudget = () => {
     `                              ` + chalk.green.bold(`Budget By Department:`)
   );
   console.log(
-    chalk.yellow.bold(
+    chalk.purple.bold(
       `====================================================================================`
     )
   );
@@ -266,7 +266,7 @@ const viewDepartmentBudget = () => {
     if (error) throw error;
     console.table(response);
     console.log(
-      chalk.yellow.bold(
+      chalk.purple.bold(
         `====================================================================================`
       )
     );
@@ -413,13 +413,13 @@ const addRole = () => {
           connection.promise().query(sql, crit, (error) => {
             if (error) throw error;
             console.log(
-              chalk.yellow.bold(
+              chalk.purple.bold(
                 `====================================================================================`
               )
             );
             console.log(chalk.greenBright(`Role successfully created!`));
             console.log(
-              chalk.yellow.bold(
+              chalk.purple.bold(
                 `====================================================================================`
               )
             );
