@@ -4,28 +4,22 @@ const inquirer = require("inquirer");
 const cTable = require("console.table");
 const chalk = require("chalk");
 const figlet = require("figlet");
-const validate = require("./javascript/validate");
+const validate = require("./scripts/validate");
 // Database Connect and Starter Title
 connection.connect((error) => {
   if (error) throw error;
   console.log(
-    chalk.purple.bold(
+    chalk.blue(
       `====================================================================================`
     )
   );
   console.log(``);
-  console.log(chalk.greenBright.bold(figlet.textSync("Employee Tracker")));
+  console.log(chalk.greenBright(figlet.textSync("Employee Tracker")));
+  console.log(``);
+  console.log(`                                                          ` + chalk.greenBright.bold("Created By: Jacob Lausier"));
   console.log(``);
   console.log(
-    `                                                          ` +
-      chalk.greenBright.bold("Created By: Jacob Lausier")
-  );
-  console.log(``);
-  console.log(
-    chalk.purple.bold(
-      `====================================================================================`
-    )
-  );
+    chalk.blue(`====================================================================================`));
   promptUser();
 });
 const promptUser = () => {
@@ -126,88 +120,69 @@ const viewAllEmployees = () => {
                     WHERE department.id = role.department_id 
                     AND role.id = employee.role_id
                     ORDER BY employee.id ASC`;
-  connection.promise().query(sql, (error, response) => {
-    if (error) throw error;
-    console.log(
-      chalk.purple.bold(
-        `====================================================================================`
-      )
-    );
-    console.log(
-      `                              ` + chalk.green.bold(`Current Employees:`)
-    );
-    console.log(
-      chalk.purple.bold(
-        `====================================================================================`
-      )
-    );
-    console.table(response);
-    console.log(
-      chalk.purple.bold(
-        `====================================================================================`
-      )
-    );
-    promptUser();
-  });
+  connection.promise()
+    .query(sql)
+    .then(([rows, fields]) => {
+      console.log(chalk.magenta.bold(`====================================================================================`));
+      console.log(`                              ` + chalk.green.bold(`Current Employees:`));
+      console.log(chalk.magenta.bold(`====================================================================================`));
+      console.table(rows);
+      console.log(chalk.magenta.bold(`====================================================================================`));
+      promptUser();
+    })
+    .catch((error) => {
+      console.error("Error while fetching employees:", error);
+    });
 };
+
 // View all Roles
 const viewAllRoles = () => {
-  console.log(
-    chalk.purple.bold(
-      `====================================================================================`
-    )
-  );
-  console.log(
-    `                              ` +
-      chalk.green.bold(`Current Employee Roles:`)
-  );
-  console.log(
-    chalk.purple.bold(
-      `====================================================================================`
-    )
-  );
-  const sql = `SELECT role.id, role.title, department.department_name AS department
+  let sql = `SELECT role.id, role.title, department.department_name AS department
                     FROM role
                     INNER JOIN department ON role.department_id = department.id`;
-  connection.promise().query(sql, (error, response) => {
-    if (error) throw error;
-    response.forEach((role) => {
-      console.log(role.title);
+
+  connection.promise()
+    .query(sql)
+    .then(([rows, fields]) => {
+      console.log(chalk.magenta.bold(`====================================================================================`));
+      console.log(`                              ` + chalk.green.bold(`Current Employee Roles:`));
+      console.log(chalk.magenta.bold(`====================================================================================`));
+      rows.forEach((role) => {
+        console.log(role.title);
+      });
+      console.log(chalk.magenta.bold(`====================================================================================`));
+      promptUser();
+    })
+    .catch((error) => {
+      console.error("Error while fetching roles:", error);
     });
-    console.log(
-      chalk.purple.bold(
-        `====================================================================================`
-      )
-    );
-    promptUser();
-  });
 };
+
 // View all Departments
 const viewAllDepartments = () => {
-  const sql = `SELECT department.id AS id, department.department_name AS department FROM department`;
-  connection.promise().query(sql, (error, response) => {
-    if (error) throw error;
-    console.log(
-      chalk.purple.bold(
-        `====================================================================================`
-      )
-    );
+  let sql = `SELECT department.id AS id, department.department_name AS department FROM department`;
+  connection.promise()
+  .query(sql)
+  .then (([rows, fields]) => {
     console.log(
       `                              ` + chalk.green.bold(`All Departments:`)
     );
     console.log(
-      chalk.purple.bold(
+      chalk.magenta.bold(
         `====================================================================================`
       )
     );
     console.table(response);
     console.log(
-      chalk.purple.bold(
+      chalk.magenta.bold(
         `====================================================================================`
       )
     );
     promptUser();
-  });
+  })
+  .catch((error) => {
+    console.error("Error while fetching departments: ", error)
+  })
 };
 // View all Employees by Department
 const viewEmployeesByDepartment = () => {
@@ -220,7 +195,7 @@ const viewEmployeesByDepartment = () => {
   connection.query(sql, (error, response) => {
     if (error) throw error;
     console.log(
-      chalk.purple.bold(
+      chalk.magenta.bold(
         `====================================================================================`
       )
     );
@@ -229,13 +204,13 @@ const viewEmployeesByDepartment = () => {
         chalk.green.bold(`Employees by Department:`)
     );
     console.log(
-      chalk.purple.bold(
+      chalk.magenta.bold(
         `====================================================================================`
       )
     );
     console.table(response);
     console.log(
-      chalk.purple.bold(
+      chalk.magenta.bold(
         `====================================================================================`
       )
     );
@@ -245,7 +220,7 @@ const viewEmployeesByDepartment = () => {
 //View all Departments by Budget
 const viewDepartmentBudget = () => {
   console.log(
-    chalk.purple.bold(
+    chalk.magenta.bold(
       `====================================================================================`
     )
   );
@@ -253,7 +228,7 @@ const viewDepartmentBudget = () => {
     `                              ` + chalk.green.bold(`Budget By Department:`)
   );
   console.log(
-    chalk.purple.bold(
+    chalk.magenta.bold(
       `====================================================================================`
     )
   );
@@ -266,7 +241,7 @@ const viewDepartmentBudget = () => {
     if (error) throw error;
     console.table(response);
     console.log(
-      chalk.purple.bold(
+      chalk.magenta.bold(
         `====================================================================================`
       )
     );
@@ -413,13 +388,13 @@ const addRole = () => {
           connection.promise().query(sql, crit, (error) => {
             if (error) throw error;
             console.log(
-              chalk.purple.bold(
+              chalk.magenta.bold(
                 `====================================================================================`
               )
             );
             console.log(chalk.greenBright(`Role successfully created!`));
             console.log(
-              chalk.purple.bold(
+              chalk.magenta.bold(
                 `====================================================================================`
               )
             );

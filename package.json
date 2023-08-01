@@ -3,18 +3,26 @@
   "version": "1.0.0",
   "description": "will be able to use the employee tracker to add new employees, change roles, and add departments. ",
   "main": "server.js",
-  "directories": {
-    "lib": "lib"
-  },
+  "directories": "",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
+    "migrate": "mysql db/employees.db < db/schema.sql",
+    "seed": "mysql db/employees.db < db/seeds.sql",
+    "db": "mysql db/employees.db",
+    "watch": "nodemon server.js",
     "start": "node server.js"
   },
   "author": "Jacob Lausier",
   "license": "MIT",
   "dependencies": {
-    "express": "^4.18.2",
-    "inquirer": "^8.2.4",
-    "mysql2": "^3.5.2"
+    "chalk": "^4.0.0",
+    "console.table": "^0.10.0",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "figlet": "^1.4.0",
+    "inquirer": "^7.1.0",
+    "mysql2": "^2.1.0",
+    "nodemon": "^2.0.4",
+    "validator": "^13.0.0"
   }
 }
