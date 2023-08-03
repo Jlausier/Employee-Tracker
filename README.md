@@ -19,7 +19,7 @@ This project is licensed under the [MIT](https://opensource.org/licenses/MIT) Li
   use npm i
   
   ## Usage
-  run node index.js in the cli
+  run npm start in the cli
 
   https://drive.google.com/file/d/1HV03TkZV51KcZ7WOq21h77f749-Mdo3R/view
   
