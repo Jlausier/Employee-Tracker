@@ -4,9 +4,12 @@ const inquirer = require("inquirer");
 const cTable = require("console.table");
 const chalk = require("chalk");
 const figlet = require("figlet");
-const validate = require("./scripts/validate");
+
+
+
 // Database Connect and Starter Title
 connection.connect((error) => {
+  // catch all errors
   if (error) throw error;
   console.log(
     chalk.blue(
@@ -14,21 +17,26 @@ connection.connect((error) => {
     )
   );
   console.log(``);
-  console.log(chalk.greenBright(figlet.textSync("Employee Tracker")));
-  console.log(``);
-  console.log(`                                                          ` + chalk.greenBright.bold("Created By: Jacob Lausier"));
-  console.log(``);
+
+  console.log(chalk.cyanBright(figlet.textSync("Employee-Tracker")));
+
+  console.log(`                                                          ` + chalk.cyanBright.bold("Author: Jacob Lausier"));
+
   console.log(
+
     chalk.blue(`====================================================================================`));
+
   promptUser();
+
 });
 const promptUser = () => {
   inquirer
+  // cycle through all choices or allow exit of node.js app
     .prompt([
       {
         name: "choices",
         type: "list",
-        message: "Please select an option:",
+        message: "Select an option:",
         choices: [
           "View All Employees",
           "View All Roles",
@@ -47,7 +55,7 @@ const promptUser = () => {
         ],
       },
     ])
-    // answers to the prompt
+    // answers to the prompt, once choice selected display relevent table. 
     .then((answers) => {
       const { choices } = answers;
 
@@ -108,7 +116,9 @@ const promptUser = () => {
       }
     });
 };
-// View All Employees
+
+
+// View All Employees with the department they work, salary and employee id
 const viewAllEmployees = () => {
   let sql = `SELECT employee.id, 
                     employee.first_name, 
@@ -124,18 +134,21 @@ const viewAllEmployees = () => {
     .query(sql)
     .then(([rows, fields]) => {
       console.log(chalk.magenta.bold(`====================================================================================`));
-      console.log(`                              ` + chalk.green.bold(`Current Employees:`));
+      console.log(`                              ` + chalk.cyan.bold(`Current Employees:`));
       console.log(chalk.magenta.bold(`====================================================================================`));
       console.table(rows);
       console.log(chalk.magenta.bold(`====================================================================================`));
       promptUser();
     })
+    // catch all errors
     .catch((error) => {
-      console.error("Error while fetching employees:", error);
+      console.error("Error while getting employees:", error);
     });
 };
 
-// View all Roles
+
+
+// View all Roles in each department
 const viewAllRoles = () => {
   let sql = `SELECT role.id, role.title, department.department_name AS department
                     FROM role
@@ -145,7 +158,7 @@ const viewAllRoles = () => {
     .query(sql)
     .then(([rows, fields]) => {
       console.log(chalk.magenta.bold(`====================================================================================`));
-      console.log(`                              ` + chalk.green.bold(`Current Employee Roles:`));
+      console.log(`                              ` + chalk.cyan.bold(`Current Employee Roles:`));
       console.log(chalk.magenta.bold(`====================================================================================`));
       rows.forEach((role) => {
         console.log(role.title);
@@ -153,10 +166,13 @@ const viewAllRoles = () => {
       console.log(chalk.magenta.bold(`====================================================================================`));
       promptUser();
     })
+    // catch all errors
     .catch((error) => {
-      console.error("Error while fetching roles:", error);
+      console.error("Error while getting roles:", error);
     });
 };
+
+
 
 // View all Departments
 const viewAllDepartments = () => {
@@ -165,7 +181,7 @@ const viewAllDepartments = () => {
   .query(sql)
   .then (([rows, fields]) => {
     console.log(
-      `                              ` + chalk.green.bold(`All Departments:`)
+      `                              ` + chalk.cyan.bold(`Departments:`)
     );
     console.log(
       chalk.magenta.bold(
@@ -181,10 +197,12 @@ const viewAllDepartments = () => {
     promptUser();
   })
   .catch((error) => {
-    console.error("Error while fetching departments: ", error)
+    console.error("Error while getting departments: ", error)
   })
 };
-// View all Employees by Department
+
+
+// View all Employees by Department including employee id and role id
 const viewEmployeesByDepartment = () => {
   let sql = `SELECT employee.first_name, 
                     employee.last_name, 
@@ -193,22 +211,26 @@ const viewEmployeesByDepartment = () => {
                     LEFT JOIN role ON employee.role_id = role.id 
                     LEFT JOIN department ON role.department_id = department.id`;
   connection.query(sql, (error, response) => {
+    // catch all errors
     if (error) throw error;
     console.log(
       chalk.magenta.bold(
         `====================================================================================`
       )
     );
+
     console.log(
       `                              ` +
-        chalk.green.bold(`Employees by Department:`)
+        chalk.cyan.bold(`Employees by Departments:`)
     );
     console.log(
       chalk.magenta.bold(
         `====================================================================================`
       )
     );
+
     console.table(response);
+
     console.log(
       chalk.magenta.bold(
         `====================================================================================`
@@ -224,9 +246,11 @@ const viewDepartmentBudget = () => {
       `====================================================================================`
     )
   );
+
   console.log(
-    `                              ` + chalk.green.bold(`Budget By Department:`)
+    `                              ` + chalk.cyan.bold(`Budgets By Department:`)
   );
+
   console.log(
     chalk.magenta.bold(
       `====================================================================================`
@@ -238,8 +262,10 @@ const viewDepartmentBudget = () => {
                     FROM  role  
                     INNER JOIN department ON role.department_id = department.id GROUP BY  role.department_id`;
   connection.query(sql, (error, response) => {
+    // catch all errors
     if (error) throw error;
     console.table(response);
+
     console.log(
       chalk.magenta.bold(
         `====================================================================================`
@@ -248,39 +274,27 @@ const viewDepartmentBudget = () => {
     promptUser();
   });
 };
+
+
 // Add a New Employee
 const addEmployee = () => {
   inquirer
     .prompt([
       {
         type: "input",
-        name: "firstName", // Corrected the typo in the name here (fistName -> firstName)
-        message: "What is the employee's first name?",
-        validate: (addFirstName) => {
-          if (addFirstName) {
-            return true;
-          } else {
-            console.log("Please enter a first name");
-            return false;
-          }
-        },
+        name: "firstName", 
+        message: "First name?",
       },
       {
         type: "input",
         name: "lastName",
         message: "What is the employee's last name?",
-        validate: (addLastName) => {
-          if (addLastName) {
-            return true;
-          } else {
-            console.log("Please enter a last name");
-            return false;
-          }
-        },
+      
       },
     ])
+    // use answer to create new employee
     .then((answer) => {
-      const crit = [answer.firstName, answer.lastName]; // Corrected the typo here (fistName -> firstName)
+      const crit = [answer.firstName, answer.lastName]; 
       const roleSql = `SELECT role.id, role.title FROM role`;
       
       connection.promise().query(roleSql)
@@ -290,7 +304,7 @@ const addEmployee = () => {
             {
               type: "list",
               name: "role",
-              message: "What is the employee's role?",
+              message: "Employee's role?",
               choices: roles,
             },
           ]);
@@ -310,11 +324,12 @@ const addEmployee = () => {
             {
               type: "list",
               name: "manager",
-              message: "Who is the employee's manager?",
+              message: "Employee's manager?",
               choices: managers,
             },
           ]);
         })
+        // select employees manager
         .then((managerChoice) => {
           const manager = managerChoice.manager;
           crit.push(manager);
@@ -333,7 +348,7 @@ const addEmployee = () => {
     });
 };
 
-// Add a New Role
+// Add a New Role, select from departments to add roles into. 
 const addRole = () => {
   const sql = "SELECT * FROM department";
   connection.promise().query(sql)
@@ -361,6 +376,7 @@ const addRole = () => {
           }
         });
     })
+    // catch all errors
     .catch((error) => {
       console.error("Error while fetching department data:", error);
     });
@@ -375,13 +391,13 @@ const addRoleResume = async (departmentData) => {
         name: "newRole",
         type: "input",
         message: "What is the name of your new role?",
-        validate: validate.validateString,
+       
       },
       {
         name: "salary",
         type: "input",
         message: "What is the salary of this new role?",
-        validate: validate.validateSalary,
+        
       },
     ]);
 
@@ -404,7 +420,7 @@ const addRoleResume = async (departmentData) => {
         `====================================================================================`
       )
     );
-    console.log(chalk.greenBright(`Role successfully created!`));
+    console.log(chalk.cyanBright(`Role successfully created!`));
     console.log(
       chalk.magenta.bold(
         `====================================================================================`
@@ -412,6 +428,7 @@ const addRoleResume = async (departmentData) => {
     );
     
     viewAllRoles();
+    // catch all errors
   } catch (error) {
     console.error("Error while creating role:", error);
   }
@@ -423,23 +440,23 @@ const addRoleResume = async (departmentData) => {
     
 // Add a New Department
 const addDepartment = () => {
-  let newDepartmentName; // Create a variable to store the department name
+  let newDepartmentName; 
   inquirer
     .prompt([
       {
         name: "newDepartment",
         type: "input",
         message: "What is the name of your new Department?",
-        validate: validate.validateString,
       },
     ])
+    // add department
     .then((answer) => {
-      newDepartmentName = answer.newDepartment; // Save the department name here
+      newDepartmentName = answer.newDepartment; 
       let sql = `INSERT INTO department (department_name) VALUES (?)`;
       return connection.promise().query(sql, newDepartmentName);
     })
     .then(([result, fields]) => {
-      console.log(chalk.greenBright(newDepartmentName + ` Department successfully created!`));
+      console.log(chalk.cyanBright(newDepartmentName + ` Department successfully created!`));
       viewAllDepartments();
     })
     .catch((error) => {
@@ -448,14 +465,16 @@ const addDepartment = () => {
 };
 
 
+
+
 // Update an Employee's Role
 const updateEmployeeRole = () => {
   let employeeNamesArray;
-  let employeeRows; // Declare a variable to store the 'rows' from the first query
+  let employeeRows; 
   let sql = `SELECT employee.id, employee.first_name, employee.last_name, role.id AS "role_id" FROM employee, role, department WHERE department.id = role.department_id AND role.id = employee.role_id`;
   connection.promise().query(sql)
     .then(([rows]) => {
-      employeeRows = rows; // Save 'rows' in the variable to make it accessible in the next .then() block
+      employeeRows = rows;
       employeeNamesArray = [];
       rows.forEach((employee) => {
         employeeNamesArray.push(`${employee.first_name} ${employee.last_name}`);
@@ -463,6 +482,7 @@ const updateEmployeeRole = () => {
       let sql = `SELECT role.id, role.title FROM role`;
       return connection.promise().query(sql);
     })
+    // create new array
     .then(([response]) => {
       let rolesArray = [];
       response.forEach((role) => {
@@ -484,6 +504,7 @@ const updateEmployeeRole = () => {
             choices: rolesArray,
           },
         ])
+        //update new title and emplyoee id
         .then((answer) => {
           let newTitleId, employeeId;
 
@@ -493,7 +514,7 @@ const updateEmployeeRole = () => {
             }
           });
 
-          employeeRows.forEach((employee) => { // Use 'employeeRows' instead of 'rows'
+          employeeRows.forEach((employee) => { 
             if (
               answer.chosenEmployee ===
               `${employee.first_name} ${employee.last_name}`
@@ -504,15 +525,19 @@ const updateEmployeeRole = () => {
 
           let sqls = `UPDATE employee SET employee.role_id = ? WHERE employee.id = ?`;
           connection.query(sqls, [newTitleId, employeeId], (error) => {
+            // catch all errors
             if (error) throw error;
+
+
             console.log(
-              chalk.greenBright.bold(
+              chalk.cyanBright.bold(
                 `====================================================================================`
               )
             );
-            console.log(chalk.greenBright(`Employee Role Updated`));
+
+            console.log(chalk.cyanBright(`Employee Role Updated`));
             console.log(
-              chalk.greenBright.bold(
+              chalk.cyanBright.bold(
                 `====================================================================================`
               )
             );
@@ -520,10 +545,12 @@ const updateEmployeeRole = () => {
           });
         });
     })
+    // catch all errors
     .catch((error) => {
       console.error("Error while fetching employee and role data:", error);
     });
 };
+
 
 
 
@@ -554,7 +581,7 @@ const updateEmployeeManager = () => {
               {
                 name: "newManager",
                 type: "list",
-                message: "Who is their manager?",
+                message: "Their manager?",
                 choices: employeeNamesArray,
               },
             ])
@@ -580,33 +607,19 @@ const updateEmployeeManager = () => {
                   managerId = employee.id;
                 }
               });
-
-              if (validate.isSame(answers.chosenEmployee, answers.newManager)) {
-                console.log(
-                  chalk.redBright.bold(
-                    `====================================================================================`
-                  )
-                );
-                console.log(chalk.redBright(`Invalid Manager Selection`));
-                console.log(
-                  chalk.redBright.bold(
-                    `====================================================================================`
-                  )
-                );
-                promptUser();
-              } else {
+               {
                 let updateSql = `UPDATE employee SET employee.manager_id = ? WHERE employee.id = ?`;
 
                 connection.query(updateSql, [managerId, employeeId], (error) => {
                   if (error) throw error;
                   console.log(
-                    chalk.greenBright.bold(
+                    chalk.cyanBright.bold(
                       `====================================================================================`
                     )
                   );
-                  console.log(chalk.greenBright(`Employee Manager Updated`));
+                  console.log(chalk.cyanBright(`Employee Manager Updated`));
                   console.log(
-                    chalk.greenBright.bold(
+                    chalk.cyanBright.bold(
                       `====================================================================================`
                     )
                   );
@@ -616,10 +629,14 @@ const updateEmployeeManager = () => {
             });
         });
     })
+
+    // catch all errors
     .catch((error) => {
       console.error("Error while fetching employee data:", error);
     });
 };
+
+
 
 // delete employee
 const removeEmployee = () => {
@@ -653,27 +670,32 @@ const removeEmployee = () => {
           connection.promise().query(deleteSql, [employeeId])
             .then(() => {
               console.log(
-                chalk.redBright.bold(
+                chalk.red.bold(
                   `====================================================================================`
                 )
               );
-              console.log(chalk.greenBright(`Employee Successfully Removed`));
+              console.log(chalk.cyanBright(`Employee Successfully Removed`));
               console.log(
-                chalk.redBright.bold(
+                chalk.red.bold(
                   `====================================================================================`
                 )
               );
               viewAllEmployees();
             })
+            // catch all errors
             .catch((error) => {
               throw error;
             });
         });
     })
+    // catch all errors
     .catch((error) => {
-      console.error("Error while fetching employees data:", error);
+      console.error("Error while getting employees data:", error);
     });
 };
+
+
+
 
 // Delete a Role
 
@@ -708,24 +730,27 @@ const removeRole = () => {
           let deleteSql = `DELETE FROM role WHERE role.id = ?`;
           connection.promise().query(deleteSql, [roleId])
             .then(() => {
+
               console.log(
-                chalk.redBright.bold(
+                chalk.red.bold(
                   `====================================================================================`
                 )
               );
-              console.log(chalk.greenBright(`Role Successfully Removed`));
+              console.log(chalk.cyanBright(`Role Successfully Removed`));
               console.log(
-                chalk.redBright.bold(
+                chalk.red.bold(
                   `====================================================================================`
                 )
               );
               viewAllRoles();
             })
+            // catch all errors
             .catch((error) => {
               throw error;
             });
         });
     })
+    // catch all errors
     .catch((error) => {
       console.error("Error while fetching roles data:", error);
     });
@@ -746,7 +771,7 @@ const removeDepartment = () => {
           {
             name: "chosenDept",
             type: "list",
-            message: "Which department would you like to remove?",
+            message: "Remove?",
             choices: departmentNamesArray,
           },
         ])
@@ -763,24 +788,26 @@ const removeDepartment = () => {
           connection.promise().query(deleteSql, [departmentId])
             .then(() => {
               console.log(
-                chalk.redBright.bold(
+                chalk.red.bold(
                   `====================================================================================`
                 )
               );
-              console.log(chalk.redBright(`Department Successfully Removed`));
+              console.log(chalk.red(`Department Successfully Removed`));
               console.log(
-                chalk.redBright.bold(
+                chalk.red.bold(
                   `====================================================================================`
                 )
               );
               viewAllDepartments();
             })
+            // catch all errors
             .catch((error) => {
               throw error;
             });
         });
     })
+    // catch all errors
     .catch((error) => {
-      console.error("Error while fetching departments data:", error);
+      console.error("Error while getting departments data:", error);
     });
 };
