@@ -18,7 +18,7 @@ connection.connect((error) => {
   );
   console.log(``);
 
-  console.log(chalk.cyanBright(figlet.textSync("Employee-Tracker")));
+  console.log(chalk.cyanBright(figlet.textSync("Company Manager")));
 
   console.log(`                                                          ` + chalk.cyanBright.bold("Author: Jacob Lausier"));
 
@@ -38,23 +38,24 @@ const promptUser = () => {
         type: "list",
         message: "Select an option:",
         choices: [
-          "View All Employees",
-          "View All Roles",
-          "View All Departments",
-          "View All Employees By Department",
+          "View Employees",
+          "View Roles",
+          "View Departments",
+          "View Employees By Department",
           "View Department Budgets",
           "Update Employee Role",
           "Update Employee Manager",
           "Add Employee",
           "Add Role",
           "Add Department",
-          "Remove Employee",
-          "Remove Role",
-          "Remove Department",
+          "Delete Employee",
+          "Delete Role",
+          "Delete Department",
           "Exit",
         ],
       },
     ])
+
     // answers to the prompt, once choice selected display relevent table. 
     .then((answers) => {
       const { choices } = answers;
@@ -134,10 +135,19 @@ const viewAllEmployees = () => {
     .query(sql)
     .then(([rows, fields]) => {
       console.log(chalk.magenta.bold(`====================================================================================`));
+
+
       console.log(`                              ` + chalk.cyan.bold(`Current Employees:`));
+
       console.log(chalk.magenta.bold(`====================================================================================`));
+
+
       console.table(rows);
+
+
       console.log(chalk.magenta.bold(`====================================================================================`));
+
+
       promptUser();
     })
     // catch all errors
@@ -157,13 +167,21 @@ const viewAllRoles = () => {
   connection.promise()
     .query(sql)
     .then(([rows, fields]) => {
+
       console.log(chalk.magenta.bold(`====================================================================================`));
-      console.log(`                              ` + chalk.cyan.bold(`Current Employee Roles:`));
+
+      console.log(`                              ` + chalk.cyan.bold(`Employee Roles:`));
+
       console.log(chalk.magenta.bold(`====================================================================================`));
+
       rows.forEach((role) => {
+
         console.log(role.title);
+
       });
+
       console.log(chalk.magenta.bold(`====================================================================================`));
+
       promptUser();
     })
     // catch all errors
@@ -174,25 +192,35 @@ const viewAllRoles = () => {
 
 
 
-// View all Departments
+// View Departments
 const viewAllDepartments = () => {
   let sql = `SELECT department.id AS id, department.department_name AS department FROM department`;
   connection.promise()
   .query(sql)
   .then (([rows, fields]) => {
+
     console.log(
+      
       `                              ` + chalk.cyan.bold(`Departments:`)
+
     );
     console.log(
+
       chalk.magenta.bold(
+
         `====================================================================================`
+
       )
     );
     console.table(rows);
     console.log(
+
       chalk.magenta.bold(
+
         `====================================================================================`
+
       )
+
     );
     promptUser();
   })
@@ -213,9 +241,13 @@ const viewEmployeesByDepartment = () => {
   connection.query(sql, (error, response) => {
     // catch all errors
     if (error) throw error;
+
     console.log(
+
       chalk.magenta.bold(
+
         `====================================================================================`
+
       )
     );
 
@@ -240,6 +272,7 @@ const viewEmployeesByDepartment = () => {
   });
 };
 //View all Departments by Budget
+
 const viewDepartmentBudget = () => {
   console.log(
     chalk.magenta.bold(
@@ -253,6 +286,7 @@ const viewDepartmentBudget = () => {
 
   console.log(
     chalk.magenta.bold(
+
       `====================================================================================`
     )
   );
@@ -268,6 +302,7 @@ const viewDepartmentBudget = () => {
 
     console.log(
       chalk.magenta.bold(
+        
         `====================================================================================`
       )
     );
@@ -438,7 +473,7 @@ const addRoleResume = async (departmentData) => {
 
 
     
-// Add a New Department
+// Add Department
 const addDepartment = () => {
   let newDepartmentName; 
   inquirer
@@ -467,7 +502,7 @@ const addDepartment = () => {
 
 
 
-// Update an Employee's Role
+// Update Role
 const updateEmployeeRole = () => {
   let employeeNamesArray;
   let employeeRows; 
@@ -536,8 +571,11 @@ const updateEmployeeRole = () => {
             );
 
             console.log(chalk.cyanBright(`Employee Role Updated`));
+
             console.log(
+
               chalk.cyanBright.bold(
+
                 `====================================================================================`
               )
             );
@@ -556,7 +594,7 @@ const updateEmployeeRole = () => {
 
 
 
-// Update an Employee's Manager
+// Update Manager
 const updateEmployeeManager = () => {
   let employeeNamesArray;
   let sql = `SELECT employee.id, employee.first_name, employee.last_name, employee.manager_id FROM employee`;
@@ -575,7 +613,7 @@ const updateEmployeeManager = () => {
               {
                 name: "chosenEmployee",
                 type: "list",
-                message: "Which employee has a new manager?",
+                message: " New manager?",
                 choices: employeeNamesArray,
               },
               {
@@ -613,10 +651,13 @@ const updateEmployeeManager = () => {
                 connection.query(updateSql, [managerId, employeeId], (error) => {
                   if (error) throw error;
                   console.log(
+
                     chalk.cyanBright.bold(
+
                       `====================================================================================`
                     )
                   );
+
                   console.log(chalk.cyanBright(`Employee Manager Updated`));
                   console.log(
                     chalk.cyanBright.bold(
@@ -645,6 +686,7 @@ const removeEmployee = () => {
     .then(([response]) => {
       let employeeNamesArray = [];
       response.forEach((employee) => {
+
         employeeNamesArray.push(employee.employee_name);
       });
 
@@ -657,6 +699,7 @@ const removeEmployee = () => {
             choices: employeeNamesArray,
           },
         ])
+
         .then((answer) => {
           let employeeId;
 
@@ -669,16 +712,23 @@ const removeEmployee = () => {
           let deleteSql = `DELETE FROM employee WHERE employee.id = ?`;
           connection.promise().query(deleteSql, [employeeId])
             .then(() => {
+
               console.log(
+
                 chalk.red.bold(
                   `====================================================================================`
                 )
+
               );
+
               console.log(chalk.cyanBright(`Employee Successfully Removed`));
               console.log(
+
                 chalk.red.bold(
+
                   `====================================================================================`
                 )
+
               );
               viewAllEmployees();
             })
@@ -697,7 +747,7 @@ const removeEmployee = () => {
 
 
 
-// Delete a Role
+// delete a Role
 
 const removeRole = () => {
   let sql = `SELECT role.id, role.title FROM role`;
@@ -731,17 +781,23 @@ const removeRole = () => {
           connection.promise().query(deleteSql, [roleId])
             .then(() => {
 
+
               console.log(
+
                 chalk.red.bold(
+
                   `====================================================================================`
                 )
               );
+
               console.log(chalk.cyanBright(`Role Successfully Removed`));
               console.log(
                 chalk.red.bold(
+
                   `====================================================================================`
                 )
               );
+
               viewAllRoles();
             })
             // catch all errors
@@ -756,7 +812,7 @@ const removeRole = () => {
     });
 };
 
-// Delete a Department
+// delete a Department
 const removeDepartment = () => {
   let sql = `SELECT department.id, department.department_name FROM department`;
   connection.promise().query(sql)
@@ -775,6 +831,7 @@ const removeDepartment = () => {
             choices: departmentNamesArray,
           },
         ])
+
         .then((answer) => {
           let departmentId;
 
@@ -788,16 +845,20 @@ const removeDepartment = () => {
           connection.promise().query(deleteSql, [departmentId])
             .then(() => {
               console.log(
+
                 chalk.red.bold(
                   `====================================================================================`
                 )
               );
+
               console.log(chalk.red(`Department Successfully Removed`));
               console.log(
                 chalk.red.bold(
+
                   `====================================================================================`
                 )
               );
+
               viewAllDepartments();
             })
             // catch all errors
